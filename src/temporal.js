@@ -113,8 +113,8 @@ Instant.prototype.toString = function () {
 };
 
 ZonedInstant.prototype.toString = function () {
-    // TBD: this is wrong, it should emit the local datetime, with offset, and zone in parenthesis.
-    return this.instant.toString() + '(' + this.zone + ')';
+    // TBD: this is wrong, it should emit the local datetime, with offset, and zone in brackets.
+    return this.instant.toString() + '[' + this.zone + ']';
 };
 
 PlainDate.prototype.inspect = PlainDate.prototype.toString;
