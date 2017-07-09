@@ -17,7 +17,7 @@ function PlainTime(hour, minute, second, millis, nanos) {
         'millis': { 'get': () => millis || 0 },
         'nanos': { 'get': () => nanos || 0 }
     });
-};
+}
 
 function PlainDateTime (date, time) {
     Object.defineProperties(this, {
@@ -32,21 +32,21 @@ function PlainDateTime (date, time) {
         'millis': { 'get': () => time.millis },
         'nanos': { 'get': () => time.nanos }
     });
-};
+}
 
 function Instant (millis, nanos) {
     Object.defineProperties(this, {
         'millis': { 'get': () => millis },
         'nanos': { 'get': () => nanos || 0 }
     });
-} 
+}
 
 function ZonedInstant(instant, zone) {
     Object.defineProperties(this, {
         'instant': { 'get': () => instant },
         'zone': { 'get': () => zone }
     });
-};
+}
 
 PlainDateTime.prototype.withUTCZone = function () {
     let d = this.date;
@@ -147,7 +147,7 @@ Instant.prototype.withZone = function (zone) {
 let temporal = {
     createDate: (year, month, day) => new PlainDate(year, month, day),
     createTime: (hour, minute, second, millis, nanos) => new PlainTime(hour, minute, second, millis, nanos),
-    createDateTime: (year, month, day, hour, minute, second, millis, nanos) => 
+    createDateTime: (year, month, day, hour, minute, second, millis, nanos) =>
         new PlainDateTime(new PlainDate(year, month, day), new PlainTime(hour, minute, second, millis, nanos)),
     createInstant: (millis, nanos) => new Instant(millis, nanos)
 };

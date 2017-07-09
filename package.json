@@ -1,0 +1,31 @@
+{
+  "name": "temporal-shim",
+  "version": "0.0.1",
+  "description": "shim for temporal proposal in ECMAScript",
+  "main": "temporal.js",
+  "scripts": {
+    "test": "webpack --config webpack-test.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mj1856/temporal-shim.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mj1856/temporal-shim/issues"
+  },
+  "homepage": "https://github.com/mj1856/temporal-shim#readme",
+  "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-eslint": "^7.2.3",
+    "babel-loader": "^7.1.1",
+    "babel-preset-es2015": "^6.24.1",
+    "eslint": "^4.1.1",
+    "eslint-loader": "^1.9.0",
+    "mocha": "^3.4.2",
+    "webpack": "^3.1.0",
+    "webpack-node-externals": "^1.6.0",
+    "webpack-shell-plugin": "^0.5.0"
+  }
+}
