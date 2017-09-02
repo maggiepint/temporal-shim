@@ -1,7 +1,10 @@
 'use strict';
 
 // Internal Constructors
-function PlainDate(year, month, day) {
+function CivilDate(year, month, day) {
+    if(!(year && month && day)) {
+        throw new Error('CivilDate expects year, month and day');
+    }
     Object.defineProperties(this, {
         'year': { 'get': () => year },
         'month': { 'get': () => month },
@@ -9,35 +12,39 @@ function PlainDate(year, month, day) {
     });
 }
 
-function PlainTime(hour, minute, second, millis, nanos) {
+function CivilTime(hour, minute, second, millisecond, nanosecond) {
+    if(!(hour && minute)) {
+        throw new Error('CivilTime expects hour and minute');
+    }
     Object.defineProperties(this, {
         'hour': { 'get': () => hour },
         'minute': { 'get': () => minute },
         'second': { 'get': () => second || 0 },
-        'millis': { 'get': () => millis || 0 },
-        'nanos': { 'get': () => nanos || 0 }
+        'millisecond': { 'get': () => millisecond || 0 },
+        'nanosecond': { 'get': () => nanosecond || 0 }
     });
 }
 
-function PlainDateTime (date, time) {
+function CivilDateTime (year, month, day, hour, minute, second, millisecond, nanosecond) {
+    if(!(year && month && day && hour && minute )) {
+        throw new Error('CivilDateTime expects year, month, day, hour, and minute');
+    }
     Object.defineProperties(this, {
-        'date': { 'get': () => date },
-        'time': { 'get': () => time },
-        'year': { 'get': () => date.year },
-        'month': { 'get': () => date.month },
-        'day': { 'get': () => date.day },
-        'hour': { 'get': () => time.hour },
-        'minute': { 'get': () => time.minute },
-        'second': { 'get': () => time.second },
-        'millis': { 'get': () => time.millis },
-        'nanos': { 'get': () => time.nanos }
+        'year': { 'get': () => year },
+        'month': { 'get': () => month },
+        'day': { 'get': () => day },
+        'hour': { 'get': () => hour },
+        'minute': { 'get': () => minute },
+        'second': { 'get': () => second },
+        'millisecond': { 'get': () => millisecond },
+        'nanosecond': { 'get': () => nanosecond }
     });
 }
 
-function Instant (millis, nanos) {
+function Instant (milliseconds, nanoseconds) {
     Object.defineProperties(this, {
-        'millis': { 'get': () => millis },
-        'nanos': { 'get': () => nanos || 0 }
+        'milliseconds': { 'get': () => milliseconds },
+        'nanoseconds': { 'get': () => nanoseconds || 0 }
     });
 }
 
@@ -48,32 +55,32 @@ function ZonedInstant(instant, zone) {
     });
 }
 
-PlainDateTime.prototype.withUTCZone = function () {
+CivilDateTime.prototype.withUTCZone = function () {
     let d = this.date;
     let t = this.time;
-    let m = Date.UTC(d.year, d.month-1, d.day, t.hour, t.minute, t.second, t.millis);
-    let instant = new Instant(m, t.nanos);
+    let m = Date.UTC(d.year, d.month-1, d.day, t.hour, t.minute, t.second, t.milliseconds);
+    let instant = new Instant(m, t.nanoseconds);
     return new ZonedInstant(instant, 'UTC');
 };
 
-PlainDateTime.prototype.withOffset = function (offset) {
+CivilDateTime.prototype.withOffset = function (offset) {
     let o = offsetStringToMinutes(offset) * 60 * 1000;
     let d = this.date;
     let t = this.time;
-    let m = Date.UTC(d.year, d.month-1, d.day, t.hour, t.minute, t.second, t.millis);
-    let instant = new Instant(m + o, t.nanos);
+    let m = Date.UTC(d.year, d.month-1, d.day, t.hour, t.minute, t.second, t.milliseconds);
+    let instant = new Instant(m + o, t.nanoseconds);
     return new ZonedInstant(instant, offset);
 };
 
-PlainDateTime.prototype.withSystemZone = function () {
+CivilDateTime.prototype.withSystemZone = function () {
     let d = this.date;
     let t = this.time;
-    let m = new Date(d.year, d.month-1, d.day, t.hour, t.minute, t.second, t.millis).valueOf();
-    let instant = new Instant(m, t.nanos);
+    let m = new Date(d.year, d.month-1, d.day, t.hour, t.minute, t.second, t.milliseconds).valueOf();
+    let instant = new Instant(m, t.nanoseconds);
     return new ZonedInstant(instant, 'SYSTEM');
 };
 
-PlainDateTime.prototype.withZone = function (zone) {
+CivilDateTime.prototype.withZone = function (zone) {
     //todo (needs time zone database)
     throw 'Not Implemented';
 };
@@ -84,32 +91,32 @@ function pad(n, width, z) {
   return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
 
-PlainDate.prototype.atTime = function (hour, minute, second, millis, nanos) {
-    return new PlainDateTime(this, new PlainTime(hour, minute, second, millis, nanos));
-}
+CivilDate.prototype.atTime = function (hour, minute, second, milliseconds, nanoseconds) {
+    return new CivilDateTime(this, new CivilTime(hour, minute, second, milliseconds, nanoseconds));
+};
 
-PlainTime.prototype.atDate = function (year, month, day) {
-    return new PlainDateTime(new PlainDate(year, month, day), this);
-}
+CivilTime.prototype.atDate = function (year, month, day) {
+    return new CivilDateTime(new CivilDate(year, month, day), this);
+};
 
 // TBD: Do we need something like these?
-PlainDate.prototype.combine = function (time) { return new PlainDateTime(this, time); };
-PlainTime.prototype.combine = function (date) { return new PlainDateTime(date, this); };
+CivilDate.prototype.combine = function (time) { return new CivilDateTime(this, time); };
+CivilTime.prototype.combine = function (date) { return new CivilDateTime(date, this); };
 
-PlainDate.prototype.toString = function () {
+CivilDate.prototype.toString = function () {
     return pad(this.year, 4) + '-' + pad(this.month, 2) + '-' + pad(this.day, 2);
 };
 
-PlainTime.prototype.toString = function () {
-    return pad(this.hour, 2) + ':' + pad(this.minute, 2) + ':' + pad(this.second, 2) + '.' + pad(this.millis, 3) + pad(this.nanos, 6);
+CivilTime.prototype.toString = function () {
+    return pad(this.hour, 2) + ':' + pad(this.minute, 2) + ':' + pad(this.second, 2) + '.' + pad(this.milliseconds, 3) + pad(this.nanoseconds, 6);
 };
 
-PlainDateTime.prototype.toString = function () {
+CivilDateTime.prototype.toString = function () {
     return this.date.toString() + 'T' + this.time.toString();
 };
 
 Instant.prototype.toString = function () {
-    return new Date(this.millis).toISOString().slice(0,-1) + pad(this.nanos, 6) + 'Z';
+    return new Date(this.milliseconds).toISOString().slice(0,-1) + pad(this.nanoseconds, 6) + 'Z';
 };
 
 ZonedInstant.prototype.toString = function () {
@@ -117,9 +124,9 @@ ZonedInstant.prototype.toString = function () {
     return this.instant.toString() + '[' + this.zone + ']';
 };
 
-PlainDate.prototype.inspect = PlainDate.prototype.toString;
-PlainTime.prototype.inspect = PlainTime.prototype.toString;
-PlainDateTime.prototype.inspect = PlainDateTime.prototype.toString;
+CivilDate.prototype.inspect = CivilDate.prototype.toString;
+CivilTime.prototype.inspect = CivilTime.prototype.toString;
+CivilDateTime.prototype.inspect = CivilDateTime.prototype.toString;
 Instant.prototype.inspect = Instant.prototype.toString;
 ZonedInstant.prototype.inspect = ZonedInstant.prototype.toString;
 
@@ -145,11 +152,11 @@ Instant.prototype.withZone = function (zone) {
 
 // top-level module definition
 let temporal = {
-    createDate: (year, month, day) => new PlainDate(year, month, day),
-    createTime: (hour, minute, second, millis, nanos) => new PlainTime(hour, minute, second, millis, nanos),
-    createDateTime: (year, month, day, hour, minute, second, millis, nanos) =>
-        new PlainDateTime(new PlainDate(year, month, day), new PlainTime(hour, minute, second, millis, nanos)),
-    createInstant: (millis, nanos) => new Instant(millis, nanos)
+    createCivilDate: (year, month, day) => new CivilDate(year, month, day),
+    createCivilTime: (hour, minute, second, milliseconds, nanoseconds) => new CivilTime(hour, minute, second, milliseconds, nanoseconds),
+    createCivilDateTime: (year, month, day, hour, minute, second, milliseconds, nanoseconds) =>
+        new CivilDateTime(new CivilDate(year, month, day), new CivilTime(hour, minute, second, milliseconds, nanoseconds)),
+    createInstant: (milliseconds, nanoseconds) => new Instant(milliseconds, nanoseconds)
 };
 
 
