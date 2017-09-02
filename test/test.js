@@ -3,18 +3,40 @@
 let temporal = require('../src/temporal');
 let assert = require('assert');
 
-describe('PlainDate', () => {
+describe('CivilDate', () => {
     describe('create', () => {
-        it('should create a plain date', () => {
-            let plainDate = temporal.createDate(2017, 12, 31);
-            assert.equal(plainDate.year, 2017);
+        it('should create a civil date', () => {
+            let civilDate = temporal.createCivilDate(2017, 12, 31);
+            assert.equal(civilDate.year, 2017);
+            assert.equal(civilDate.month, 12);
+            assert.equal(civilDate.day, 31);
         })
+        it('should not allow unspecified fields', () => {
+            assert.throws(() => { temporal.createCivilDate(2017, 12) }, Error);
+            assert.throws(() => { temporal.createCivilDate(2017) }, Error);
+        })
+
     })
 });
 
+describe('CivilTime', ()=> {
+    describe('create', ()=> {
+        it('should create civil time', () => {
+            let civilTime = temporal.createCivilTime(13,34,12,123,456789);
+            assert.equal(civilTime.hour, 13);
+            assert.equal(civilTime.minute, 34);
+            assert.equal(civilTime.second, 12);
+            assert.equal(civilTime.millisecond, 123);
+            assert.equal(civilTime.nanosecond, 456789);
+        })
+        it('should error with incomplete data', () =>{
+            assert.throws(() => { temporal.createCivilTime() }, Error);
+            assert.throws(() => { temporal.createCivilTime(10) }, Error);
+        })
+    })
+})
 
-// let d = temporal.createDate(2017, 12, 31);
-// let t = temporal.createTime(23, 59, 59, 123, 456789);
+
 
 // let dt1 = temporal.createDateTime(2017, 12, 31, 23, 59, 59, 123, 456789);
 // let dt2 = d.atTime(23, 59, 59, 123, 456789);
