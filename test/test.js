@@ -1,6 +1,6 @@
 'use strict';
 
-let temporal = require('../src/temporal');
+import temporal from '../src/temporal';
 let assert = require('assert');
 
 describe('CivilDate', () => {
