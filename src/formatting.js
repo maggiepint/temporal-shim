@@ -16,3 +16,7 @@ export function offsetStringToMinutes(s){
     let minutes = +(matches[3]);
     return sign * ((hours * 60) + minutes);
 }
+
+export function pointToISO(milliseconds, nanoseconds) {
+    return new Date(milliseconds).toISOString().slice(0,-1) + pad(nanoseconds, 6);
+}

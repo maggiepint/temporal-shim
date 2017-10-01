@@ -12,8 +12,8 @@ describe('CivilDate', () => {
             assert.equal(civilDate.day, 31);
         });
         it('should not allow unspecified fields', () => {
-            assert.throws(() => { temporal.createCivilDate(2017, 12); }, Error);
-            assert.throws(() => { temporal.createCivilDate(2017); }, Error);
+            assert.throws(() => { temporal.createCivilDate(2017, 12); }, Error, 'CivilDate expects year, month and day');
+            assert.throws(() => { temporal.createCivilDate(2017); }, Error, 'CivilDate expects year, month and day');
         });
 
     });
@@ -30,8 +30,8 @@ describe('CivilTime', ()=> {
             assert.equal(civilTime.nanosecond, 456789);
         });
         it('should error with incomplete data', () =>{
-            assert.throws(() => { temporal.createCivilTime(); }, Error);
-            assert.throws(() => { temporal.createCivilTime(10); }, Error);
+            assert.throws(() => { temporal.createCivilTime(); }, Error, 'CivilTime expects hour and minute');
+            assert.throws(() => { temporal.createCivilTime(10); }, Error, 'CivilTime expects hour and minute');
         });
     });
 });

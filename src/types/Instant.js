@@ -1,4 +1,4 @@
-import { pad } from '../formatting';
+import { pad, pointToISO } from '../formatting';
 
 function Instant (milliseconds, nanoseconds) {
     Object.defineProperties(this, {
@@ -8,7 +8,7 @@ function Instant (milliseconds, nanoseconds) {
 }
 
 Instant.prototype.toString = function () {
-    return new Date(this.milliseconds).toISOString().slice(0,-1) + pad(this.nanoseconds, 6) + 'Z';
+    return pointToISO(this.milliseconds, this.nanoseconds) + 'Z';
 };
 
 Instant.prototype.inspect = Instant.prototype.toString;

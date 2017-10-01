@@ -1,12 +1,14 @@
-function ZonedInstant(instant, zone) {
+
+function ZonedInstant(zone, milliseconds, nanoseconds) {
     Object.defineProperties(this, {
-        'instant': { 'get': () => instant },
-        'zone': { 'get': () => zone }
+        'zone': { 'get': () => zone },
+        'milliseconds': { 'get': () => milliseconds },
+        'nanoseconds': { 'get': () => nanoseconds }
     });
 }
 ZonedInstant.prototype.toString = function () {
     // TBD: this is wrong, it should emit the local datetime, with offset, and zone in brackets.
-    return this.instant.toString() + '[' + this.zone + ']';
+    //return this.instant.toString() + '[' + this.zone + ']';
 };
 
 ZonedInstant.prototype.inspect = ZonedInstant.prototype.toString;
